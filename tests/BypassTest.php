@@ -62,8 +62,8 @@ test('Route::badRequest returns 400 + body', function () {
     expect($response->json())
         ->error->toBe('Filter parameter foo does not exist.');
 
-    $response->throw();
-})->throws(RequestException::class, 'HTTP request returned status code 400');
+    expect(fn () => $response->throw())->toThrow(RequestException::class, 'HTTP request returned status code 400');
+});
 
 test('Route::Unauthorized returns 401 + body', function () {
     $uri = '/v1/my-favorites';
@@ -77,9 +77,8 @@ test('Route::Unauthorized returns 401 + body', function () {
     expect($response->json())->error->toBe('Unauthenticated');
     expect($response->failed())->toBeTrue();
 
-    $response->throw();
-})->throws(RequestException::class, 'HTTP request returned status code 401');
-
+    expect(fn () => $response->throw())->toThrow(RequestException::class, 'HTTP request returned status code 401');
+});
 
 test('Route::forbidden returns 403', function () {
     $uri = '/v1/user/1';
@@ -92,9 +91,8 @@ test('Route::forbidden returns 403', function () {
 
     expect($response->failed())->toBeTrue();
 
-    $response->throw();
-})->throws(RequestException::class, 'HTTP request returned status code 403');
-
+    expect(fn () => $response->throw())->toThrow(RequestException::class, 'HTTP request returned status code 403');
+});
 
 test('Route::notFound returns 404', function () {
     $uri = '/v1/fruits';
@@ -107,9 +105,8 @@ test('Route::notFound returns 404', function () {
 
     expect($response->failed())->toBeTrue();
 
-    $response->throw();
-})->throws(RequestException::class, 'HTTP request returned status code 404');
-
+    expect(fn () => $response->throw())->toThrow(RequestException::class, 'HTTP request returned status code 404');
+});
 
 test('Route::notAllowed returns 405', function () {
     $uri = '/update-user-with-get-method';
@@ -122,8 +119,8 @@ test('Route::notAllowed returns 405', function () {
 
     expect($response->failed())->toBeTrue();
 
-    $response->throw();
-})->throws(RequestException::class, 'HTTP request returned status code 405');
+    expect(fn () => $response->throw())->toThrow(RequestException::class, 'HTTP request returned status code 405');
+});
 
 test('Route::serverError returns 500 + body', function () {
     $uri = '/v1/foobar';
@@ -136,9 +133,8 @@ test('Route::serverError returns 500 + body', function () {
 
     expect($response->body())->toBeEmpty();
     expect($response->serverError())->toBeTrue();
-
-    $response->throw();
-})->throws(RequestException::class, 'HTTP request returned status code 500');
+    expect(fn () => $response->throw())->toThrow(RequestException::class, 'HTTP request returned status code 500');
+});
 
 test('Route::validationFailed returns 422 + body', function () {
     $uri = '/v1/user';
@@ -152,8 +148,8 @@ test('Route::validationFailed returns 422 + body', function () {
     expect($request->body())->toBeJson();
     expect($request->json()['validation_error']['first_name'][0])->toBe('Name must be at least 5 characters long.');
 
-    $request->throw();
-})->throws(RequestException::class, 'HTTP request returned status code 422');
+    expect(fn () => $request->throw())->toThrow(RequestException::class, 'HTTP request returned status code 422');
+});
 
 test("Bypass->assertRotues no called /v1/login when it is first argument", function () {
     $body = "teste";
@@ -166,8 +162,8 @@ test("Bypass->assertRotues no called /v1/login when it is first argument", funct
 
     expect($response->body())->toEqual($body);
 
-    $bypass->assertRoutes();
-})->throws(RouteNotCalledException::class, "Bypass expected route '/v1/login' with method 'GET' to be called 1 times(s). Found 0 calls(s) instead.");
+    expect(fn () => $bypass->assertRoutes())->toThrow(RouteNotCalledException::class, "Bypass expected route '/v1/login' with method 'GET' to be called 1 times(s). Found 0 calls(s) instead.");
+});
 
 test("Bypass->assertRotues no called /v1/login when it is second argument", function () {
     $body = "teste";
@@ -180,8 +176,8 @@ test("Bypass->assertRotues no called /v1/login when it is second argument", func
 
     expect($response->body())->toEqual($body);
 
-    $bypass->assertRoutes();
-})->throws(RouteNotCalledException::class, "Bypass expected route '/v1/login' with method 'GET' to be called 1 times(s). Found 0 calls(s) instead.");
+    expect(fn () => $bypass->assertRoutes())->toThrow(RouteNotCalledException::class, "Bypass expected route '/v1/login' with method 'GET' to be called 1 times(s). Found 0 calls(s) instead.");
+});
 
 test("Bypass->assertRotues no called /v1/phone/teste when it is first argument", function () {
     $body = ['fruta' => 'banana'];
@@ -194,8 +190,8 @@ test("Bypass->assertRotues no called /v1/phone/teste when it is first argument",
     expect($response->json())->toHaveKeys(['fruta']);
     expect($response->json())->toEqual($body);
 
-    $bypass->assertRoutes();
-})->throws(RouteNotCalledException::class, "Bypass expected route '/v1/phone/teste' with method 'GET' to be called 1 times(s). Found 0 calls(s) instead.");
+    expect(fn () => $bypass->assertRoutes())->toThrow(RouteNotCalledException::class, "Bypass expected route '/v1/phone/teste' with method 'GET' to be called 1 times(s). Found 0 calls(s) instead.");
+});
 
 test("Bypass->assertRotues no called /v1/phone/teste when it is second argument", function () {
     $body = ['fruta' => 'banana'];
@@ -208,5 +204,5 @@ test("Bypass->assertRotues no called /v1/phone/teste when it is second argument"
     expect($response->json())->toHaveKeys(['fruta']);
     expect($response->json())->toEqual($body);
 
-    $bypass->assertRoutes();
-})->throws(RouteNotCalledException::class, "Bypass expected route '/v1/phone/teste' with method 'GET' to be called 1 times(s). Found 0 calls(s) instead.");
+    expect(fn () => $bypass->assertRoutes())->toThrow(RouteNotCalledException::class, "Bypass expected route '/v1/phone/teste' with method 'GET' to be called 1 times(s). Found 0 calls(s) instead.");
+});

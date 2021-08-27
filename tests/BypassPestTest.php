@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Http;
 use Tests\Services\GithubRepoService;
 use Tests\Services\LogoService;
 use Ciareis\Bypass\RouteNotCalledException;
+use Illuminate\Http\Client\ConnectionException;
 
 it("total stargazers by user", function ($body) {
     // prepare
@@ -42,9 +43,9 @@ it('returns route not called exception', function () {
     $path = '/users/emtudo/repos';
 
     $bypass->addRoute(method: 'get', uri: $path, status: 503);
-    $bypass->assertRoutes();
-})->throws(RouteNotCalledException::class, "Bypass expected route '/users/emtudo/repos' with method 'GET' to be called 1 times(s). Found 0 calls(s) instead.");
 
+    expect(fn () => $bypass->assertRoutes())->toThrow(RouteNotCalledException::class, "Bypass expected route '/users/emtudo/repos' with method 'GET' to be called 1 times(s). Found 0 calls(s) instead.");
+});
 
 it('returns server unavailable', function () {
     // prepare
@@ -115,8 +116,8 @@ it('returns exceptions when server down', function () {
     $bypass = Bypass::open();
     $bypass->down();
 
-    Http::get($bypass->getBaseUrl('/no-route'));
-})->throws(Illuminate\Http\Client\ConnectionException::class);
+    expect(fn () => Http::get($bypass->getBaseUrl('/no-route')))->toThrow(ConnectionException::class);
+});
 
 function getBody()
 {
